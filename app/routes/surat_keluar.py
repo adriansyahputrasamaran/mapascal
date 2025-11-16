@@ -8,7 +8,7 @@ import os
 import uuid
 from werkzeug.utils import secure_filename
 from datetime import datetime
-import magic
+import filetype
 
 surat_keluar_bp = Blueprint('surat_keluar', __name__, url_prefix='/surat_keluar')
 
