@@ -8,7 +8,7 @@ import os
 import uuid
 from werkzeug.utils import secure_filename
 from datetime import datetime
-import magic
+import filetype
 
 surat_masuk_bp = Blueprint('surat_masuk', __name__, url_prefix='/surat_masuk')
 
@@ -25,7 +25,8 @@ ALLOWED_MIME_TYPES = {
 def is_allowed_file(file_stream):
     try:
         # Read the first 2048 bytes to determine the mime type
-        mime_type = magic.from_buffer(file_stream.read(2048), mime=True)
+        kind = filetype.guess(file_stream.read(2048))
+        mime_type = kind.mime if kind else None
         file_stream.seek(0)  # Reset stream position
         return mime_type in ALLOWED_MIME_TYPES
     except Exception:
