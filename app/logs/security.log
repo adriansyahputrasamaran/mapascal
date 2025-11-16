@@ -12,3 +12,8 @@
 2025-11-16 21:35:54,372 INFO: MAPASCAL startup [in C:\laragon\www\Sistem Informasi Manajemen Surat dan Keanggotaan MAPASCAL berbasis web\app\__init__.py:91]
 2025-11-16 21:36:41,320 INFO: MAPASCAL startup [in C:\laragon\www\Sistem Informasi Manajemen Surat dan Keanggotaan MAPASCAL berbasis web\app\__init__.py:91]
 2025-11-16 21:38:06,832 INFO: MAPASCAL startup [in C:\laragon\www\Sistem Informasi Manajemen Surat dan Keanggotaan MAPASCAL berbasis web\app\__init__.py:91]
+2025-11-16 22:26:30,120 INFO: MAPASCAL startup [in C:\laragon\www\Sistem Informasi Manajemen Surat dan Keanggotaan MAPASCAL berbasis web\app\__init__.py:91]
+2025-11-16 22:26:35,259 WARNING: Not Found: http://127.0.0.1:5000/favicon.ico from 127.0.0.1 [in C:\laragon\www\Sistem Informasi Manajemen Surat dan Keanggotaan MAPASCAL berbasis web\app\__init__.py:122]
+2025-11-16 22:26:38,574 WARNING: Not Found: http://127.0.0.1:5000/static/images/mountain_bg.jpg from 127.0.0.1 [in C:\laragon\www\Sistem Informasi Manajemen Surat dan Keanggotaan MAPASCAL berbasis web\app\__init__.py:122]
+2025-11-16 22:26:45,502 WARNING: Login failed for user admin: Invalid credentials or role mismatch from 127.0.0.1 [in C:\laragon\www\Sistem Informasi Manajemen Surat dan Keanggotaan MAPASCAL berbasis web\app\routes\auth.py:56]
+2025-11-16 22:26:52,605 WARNING: Login failed for user admin: Invalid credentials or role mismatch from 127.0.0.1 [in C:\laragon\www\Sistem Informasi Manajemen Surat dan Keanggotaan MAPASCAL berbasis web\app\routes\auth.py:56]
