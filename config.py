@@ -5,7 +5,16 @@ import os
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY')
-    DATABASE_URL = os.environ.get('DATABASE_URL')
+    MYSQL_HOST = os.environ.get("MYSQLHOST")
+    MYSQL_PORT = os.environ.get("MYSQLPORT")
+    MYSQL_USER = os.environ.get("MYSQLUSER")
+    MYSQL_PASSWORD = os.environ.get("MYSQLPASSWORD")
+    MYSQL_DB = os.environ.get("MYSQLDATABASE")
+
+    SQLALCHEMY_DATABASE_URI = (
+    f"mysql+pymysql://root:hNORIFRysdBfIehFKGjrQFWNrBWHdqAg@shuttle.proxy.rlwy.net:42948/railway"
+)
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = os.environ.get('FLASK_DEBUG') == 'True' # Set DEBUG based on FLASK_DEBUG env var
     UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', 'app/uploads') # Configurable upload folder
