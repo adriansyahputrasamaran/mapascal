@@ -5,7 +5,7 @@ import os
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY')
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    DATABASE_URL = os.environ.get('DATABASE_URL')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = os.environ.get('FLASK_DEBUG') == 'True' # Set DEBUG based on FLASK_DEBUG env var
     UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', 'app/uploads') # Configurable upload folder
