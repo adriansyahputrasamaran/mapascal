@@ -31,6 +31,7 @@ MarkupSafe==3.0.3
 mdurl==0.1.2
 msgpack==1.1.2
 ordered-set==4.1.0
+gunicorn==20.1.0
 packageurl-python==0.17.5
 packaging==25.0
 pip-api==0.0.34
