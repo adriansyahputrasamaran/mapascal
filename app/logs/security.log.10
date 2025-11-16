@@ -1,0 +1,88 @@
+2025-11-14 05:20:36,010 ERROR: Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application. at http://127.0.0.1:5000/login from 127.0.0.1 [in c:\laragon\www\Sistem Informasi Manajemen Surat dan Keanggotaan MAPASCAL berbasis web\app\__init__.py:81]
+Traceback (most recent call last):
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_limiter\extension.py", line 1299, in __inner
+    return cast(R, flask.current_app.ensure_sync(obj)(*a, **k))
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "c:\laragon\www\Sistem Informasi Manajemen Surat dan Keanggotaan MAPASCAL berbasis web\app\routes\auth.py", line 43, in login
+    form = LoginForm()
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\wtforms\form.py", line 209, in __call__
+    return type.__call__(cls, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_wtf\form.py", line 73, in __init__
+    super().__init__(formdata=formdata, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\wtforms\form.py", line 287, in __init__
+    self.process(formdata, obj, data=data, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\wtforms\form.py", line 128, in process
+    field.process(formdata, data, extra_filters=field_extra_filters)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\wtforms\csrf\core.py", line 44, in process
+    self.current_token = self.csrf_impl.generate_csrf_token(self)
+                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_wtf\csrf.py", line 147, in generate_csrf_token
+    return generate_csrf(
+        secret_key=self.meta.csrf_secret, token_key=self.meta.csrf_field_name
+    )
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_wtf\csrf.py", line 36, in generate_csrf
+    secret_key = _get_config(
+        secret_key,
+    ...<2 lines>...
+        message="A secret key is required to use CSRF.",
+    )
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_wtf\csrf.py", line 136, in _get_config
+    raise RuntimeError(message)
+RuntimeError: A secret key is required to use CSRF.
+2025-11-14 05:20:41,021 ERROR: Exception on /login [GET] [in C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py:825]
+Traceback (most recent call last):
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask\app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_limiter\extension.py", line 1299, in __inner
+    return cast(R, flask.current_app.ensure_sync(obj)(*a, **k))
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "c:\laragon\www\Sistem Informasi Manajemen Surat dan Keanggotaan MAPASCAL berbasis web\app\routes\auth.py", line 43, in login
+    form = LoginForm()
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\wtforms\form.py", line 209, in __call__
+    return type.__call__(cls, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_wtf\form.py", line 73, in __init__
+    super().__init__(formdata=formdata, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\wtforms\form.py", line 287, in __init__
+    self.process(formdata, obj, data=data, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\wtforms\form.py", line 128, in process
+    field.process(formdata, data, extra_filters=field_extra_filters)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\wtforms\csrf\core.py", line 44, in process
+    self.current_token = self.csrf_impl.generate_csrf_token(self)
+                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_wtf\csrf.py", line 147, in generate_csrf_token
+    return generate_csrf(
+        secret_key=self.meta.csrf_secret, token_key=self.meta.csrf_field_name
+    )
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_wtf\csrf.py", line 36, in generate_csrf
+    secret_key = _get_config(
+        secret_key,
+    ...<2 lines>...
+        message="A secret key is required to use CSRF.",
+    )
+  File "C:\Users\Adrian.F.D\AppData\Local\Programs\Python\Python313\Lib\site-packages\flask_wtf\csrf.py", line 136, in _get_config
+    raise RuntimeError(message)
+RuntimeError: A secret key is required to use CSRF.

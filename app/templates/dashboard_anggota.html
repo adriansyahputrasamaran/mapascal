@@ -1,0 +1,91 @@
+{% extends "base_anggota.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mt-4">Dashboard Anggota</h1>
+    <p class="lead mb-4">Selamat Datang, {{ user.nama_lengkap }}! Jelajahi informasi surat terbaru dari MAPASCAL.</p>
+
+    <div class="row">
+        <!-- Card: Lihat Surat Masuk -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Informasi Penting</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">Lihat Surat Masuk</div>
+                            <p class="text-muted mt-2">Akses semua surat masuk yang telah terdaftar di sistem.</p>
+                            <a href="{{ url_for('surat_masuk.list_surat_masuk') }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-eye me-1"></i> Lihat Sekarang
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-inbox fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card: Lihat Surat Keluar -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Informasi Penting</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">Lihat Surat Keluar</div>
+                            <p class="text-muted mt-2">Telusuri arsip surat keluar organisasi.</p>
+                            <a href="{{ url_for('surat_keluar.list_surat_keluar') }}" class="btn btn-success btn-sm">
+                                <i class="fas fa-paper-plane me-1"></i> Lihat Sekarang
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-paper-plane fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card: Daftar Anggota MAPASCAL -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Informasi Organisasi</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">Daftar Anggota MAPASCAL</div>
+                            <p class="text-muted mt-2">Lihat daftar lengkap anggota MAPASCAL.</p>
+                            <a href="{{ url_for('auth.list_anggota') }}" class="btn btn-info btn-sm">
+                                <i class="fas fa-users me-1"></i> Lihat Sekarang
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Pesan dari MAPASCAL</h6>
+                </div>
+                <div class="card-body">
+                    <p>Sebagai anggota Mahasiswa Pecinta Alam STMIK Computer Analist (MAPASCAL), Anda adalah bagian integral dari upaya kami menjaga kelestarian alam dan lingkungan. Tetap semangat dalam setiap kegiatan dan teruslah berkarya!</p>
+                    <p class="mb-0">"Alam adalah guru terbaik. Setiap petualangan adalah pelajaran."</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base_admin.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>{{ title }}</h2>
+    <div class="card p-4">
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.nomor_surat.label(class="form-label") }}
+                {{ form.nomor_surat(class="form-control", placeholder="Masukkan Nomor Surat") }}
+                {% for error in form.nomor_surat.errors %}
+                <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                {{ form.tujuan_surat.label(class="form-label") }}
+                {{ form.tujuan_surat(class="form-control", placeholder="Masukkan Tujuan Surat") }}
+                {% for error in form.tujuan_surat.errors %}
+                <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                {{ form.tanggal_surat.label(class="form-label") }}
+                {{ form.tanggal_surat(class="form-control", type="date") }}
+                {% for error in form.tanggal_surat.errors %}
+                <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                {{ form.perihal.label(class="form-label") }}
+                {{ form.perihal(class="form-control", rows="3", placeholder="Masukkan Perihal Surat") }}
+                {% for error in form.perihal.errors %}
+                <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                {{ form.file_surat.label(class="form-label") }}
+                {{ form.file_surat(class="form-control") }}
+                {% for error in form.file_surat.errors %}
+                <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+                {% if surat_keluar and surat_keluar.file_path %}
+                <small class="form-text text-muted">File saat ini: <a href="{{ url_for('surat_keluar.download_surat_keluar', surat_id=surat_keluar.id) }}" target="_blank">{{ surat_keluar.file_path }}</a></small>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
+            <a href="{{ url_for('surat_keluar.list_surat_keluar') }}" class="btn btn-secondary">Batal</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends "base_anggota.html" %}
+{% block content %}
+<div class="login-bg d-flex align-items-center justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card login-card">
+            <div class="card-header text-center">
+                <img src="{{ url_for('static', filename='images/mapascal_logo.png') }}" alt="MAPASCAL Logo" height="80" class="mb-3">
+                <h2>Login ke MAPASCAL</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('auth.login') }}">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.username.label(class="form-label") }}
+                        {{ form.username(class="form-control", placeholder="Masukkan username Anda") }}
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.username.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.password.label(class="form-label") }}
+                        {{ form.password(class="form-control", placeholder="Masukkan password Anda") }}
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.password.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.role_selection.label(class="form-label") }}
+                        {{ form.role_selection(class="form-control form-select-role") }}
+                        {% if form.role_selection.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.role_selection.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="d-grid gap-2">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+                <hr>
+                <p class="text-center mt-3">
+                    Belum terdaftar? Silakan hubungi admin.
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#adminContactModal">Klik di sini</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Contact Modal -->
+<div class="modal fade" id="adminContactModal" tabindex="-1" aria-labelledby="adminContactModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="adminContactModalLabel">Hubungi Admin</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Nomor:</strong> {{ config.ADMIN_CONTACT_PHONE }}</p>
+                <p><strong>Email:</strong> {{ config.ADMIN_CONTACT_EMAIL }}</p>
+                <p><strong>Nama:</strong> {{ config.ADMIN_CONTACT_NAME }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>{% endblock %}

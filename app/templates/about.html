@@ -1,0 +1,23 @@
+{% extends "base_anggota.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title text-center">Tentang Aplikasi MAPASCAL</h2>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Aplikasi ini adalah sistem administrasi digital MAPASCAL.</p>
+                <p class="card-text">Bertugas mencatat, menyimpan, dan mengelola surat masuk & keluar organisasi.</p>
+                <p class="card-text">Admin bertugas menginput dan mengelola data surat, sedangkan anggota hanya bisa melihat dan mengunduh surat.</p>
+                <hr>
+                <p class="card-text text-muted">Untuk informasi lebih lanjut atau bantuan, silakan hubungi administrator.</p>
+            </div>
+            <div class="card-footer text-center">
+                <a href="{{ url_for('auth.home') }}" class="btn btn-secondary">Kembali ke Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

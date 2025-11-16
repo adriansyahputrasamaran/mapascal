@@ -1,0 +1,357 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Deep Penetration Test - Sistem Informasi Manajemen Surat dan Keanggotaan MAPASCAL</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        h1 {
+            text-align: center;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+            margin-bottom: 40px;
+        }
+        h2 {
+            color: #34495e;
+            border-bottom: 1px solid #eee;
+        }
+        .section {
+            margin-bottom: 25px;
+            padding-left: 15px;
+            border-left: 4px solid #3498db;
+            background-color: #fdfdfd;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .section p {
+            margin-bottom: 8px;
+        }
+        .section strong {
+            color: #2c3e50;
+        }
+        .status-aman {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .status-rentan {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .status-info {
+            color: #f39c12;
+            font-weight: bold;
+        }
+        .risk-rendah { color: #27ae60; font-weight: bold; }
+        .risk-sedang { color: #f39c12; font-weight: bold; }
+        .risk-tinggi { color: #e74c3c; font-weight: bold; }
+        .executive-summary {
+            background-color: #ecf0f1;
+            border-left: 6px solid #3498db;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        .executive-summary h2 {
+            color: #2c3e50;
+            border-bottom: none;
+            margin-top: 0;
+            padding-bottom: 0;
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            padding-left: 0;
+        }
+        ul li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Laporan Deep Penetration Test</h1>
+        <h2>Sistem Informasi Manajemen Surat dan Keanggotaan MAPASCAL</h2>
+        <p><strong>Tanggal Pengujian:</strong> 15 November 2025</p>
+
+        <div class="executive-summary">
+            <h2>Ringkasan Eksekutif</h2>
+            <p>Sistem Informasi Manajemen Surat dan Keanggotaan MAPASCAL menunjukkan tingkat keamanan yang sangat baik dalam banyak aspek, terutama dalam kontrol akses, penanganan unggah file, dan mitigasi serangan injeksi. Implementasi Flask-Talisman untuk header keamanan, Flask-Limiter untuk pembatasan tingkat, dan penggunaan SQLAlchemy ORM yang benar memberikan fondasi keamanan yang kuat. Namun, ditemukan beberapa area yang memerlukan perhatian untuk memenuhi standar keamanan tingkat militer/perbankan, terutama terkait kebijakan kata sandi dan konfigurasi HTTPS di lingkungan produksi.</p>
+        </div>
+
+        <h3>Target Output</h3>
+        <ul>
+            <li><strong>Apakah sistem benar-benar aman?</strong>
+                <p>Sistem ini <span class="status-info">cukup aman</span> dalam banyak aspek, terutama dalam mitigasi serangan umum seperti SQL Injection, XSS, CSRF, IDOR, dan kerentanan unggah file. Namun, ada <strong>dua area kritis</strong> yang perlu diperbaiki untuk memenuhi standar keamanan tingkat militer/perbankan, terutama terkait kebijakan kata sandi dan konfigurasi HTTPS di lingkungan produksi.</p>
+            </li>
+            <li><strong>Jika belum: apa saja celahnya?</strong>
+                <ol>
+                    <li><strong>Kebijakan Kata Sandi Lemah:</strong> Hanya memerlukan panjang minimum 6 karakter tanpa validasi kompleksitas.</li>
+                    <li><strong>Potensi <code>force_https=False</code>:</strong> Dapat menyebabkan akses HTTP yang tidak terenkripsi jika tidak ditangani oleh proxy/load balancer di produksi.</li>
+                </ol>
+            </li>
+            <li><strong>Seberapa besar risikonya?</strong>
+                <ul>
+                    <li><strong>Kebijakan Kata Sandi Lemah:</strong> <span class="risk-tinggi">Tinggi</span>. Ini adalah salah satu vektor serangan paling umum dan dapat menyebabkan kompromi akun yang meluas.</li>
+                    <li><strong>Potensi <code>force_https=False</code>:</strong> <span class="risk-sedang">Sedang</span>. Risiko ini sangat tergantung pada lingkungan deployment. Jika aplikasi di-deploy tanpa HTTPS yang benar, ini bisa menjadi celah serius.</li>
+                </ul>
+            </li>
+            <li><strong>Bagaimana memperbaikinya?</strong>
+                <ol>
+                    <li><strong>Kebijakan Kata Sandi:</strong> Modifikasi <code>app/forms.py</code> untuk menambahkan validator yang lebih ketat pada field <code>password</code> di <code>RegistrationForm</code> (dan formulir perubahan kata sandi jika ada). Validator harus memastikan panjang minimum yang lebih besar (misalnya, 12-16 karakter) dan memerlukan kombinasi huruf besar, huruf kecil, angka, dan simbol.</li>
+                    <li><strong><code>force_https</code>:</strong> Di lingkungan produksi, pastikan aplikasi diakses hanya melalui HTTPS. Jika proxy/load balancer tidak menangani pengalihan HTTP ke HTTPS, ubah <code>force_https=True</code> di konfigurasi Talisman di <code>app/__init__.py</code>.</li>
+                </ol>
+            </li>
+            <li><strong>Apakah sistem bebas dari potensi eksploitasi oleh peretas profesional?</strong>
+                <p>Tidak sepenuhnya. Meskipun banyak mitigasi yang kuat telah diterapkan, peretas profesional akan menargetkan kebijakan kata sandi yang lemah dan potensi celah <code>force_https</code> untuk mendapatkan akses awal atau melakukan serangan man-in-the-middle. Implementasi MFA juga akan menjadi target untuk bypass jika ada.</p>
+            </li>
+        </ul>
+
+        <h2>1. Authentication & Session Security Testing</h2>
+        <div class="section">
+            <p><strong>Temuan:</strong> Kebijakan kata sandi hanya memerlukan panjang minimum 6 karakter tanpa validasi kompleksitas (huruf besar, kecil, angka, simbol).</p>
+            <p><strong>Dampak:</strong> Kata sandi yang lemah mudah ditebak atau di-bruteforce, meningkatkan risiko kompromi akun.</p>
+            <p><strong>Bukti:</strong> <code>app/forms.py</code>, <code>RegistrationForm</code>, <code>password</code> field validator <code>Length(min=6)</code>.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-tinggi">Tinggi</span>.</p>
+            <p><strong>Rekomendasi:</strong> Terapkan validasi kata sandi yang lebih kuat yang memerlukan kombinasi huruf besar, huruf kecil, angka, dan simbol, serta panjang minimum yang lebih besar (misalnya, 12-16 karakter).</p>
+            <p><strong>Status:</strong> <span class="status-rentan">Rentan</span>.</p>
+        </div>
+        <div class="section">
+            <p><strong>Temuan:</strong> Aplikasi tidak mendukung Multi-Factor Authentication (MFA).</p>
+            <p><strong>Dampak:</strong> Tanpa MFA, kompromi kredensial tunggal (username/password) dapat langsung menyebabkan akses tidak sah ke akun.</p>
+            <p><strong>Bukti:</strong> Tidak ada implementasi MFA yang ditemukan dalam kode.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-sedang">Sedang</span> (sebagai rekomendasi peningkatan).</p>
+            <p><strong>Rekomendasi:</strong> Pertimbangkan untuk mengimplementasikan MFA untuk lapisan keamanan tambahan, terutama untuk akun admin.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span> (tetapi direkomendasikan untuk ditingkatkan).</p>
+        </div>
+        <div class="section">
+            <p><strong>Temuan:</strong> Bruteforce resistance pada login.</p>
+            <p><strong>Dampak:</strong> Serangan bruteforce kredensial dapat dicegah.</p>
+            <p><strong>Bukti:</strong> <code>Flask-Limiter</code> dengan batas "5 per minute" pada rute <code>/login</code> dan pencegahan enumerasi username.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Tidak ada.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span>.</p>
+        </div>
+        <div class="section">
+            <p><strong>Temuan:</strong> Session fixation, session hijacking, Token entropy evaluation, Cookie security flags.</p>
+            <p><strong>Dampak:</strong> Mekanisme ini ditangani dengan baik oleh <code>flask_login</code> dan <code>Flask-Talisman</code> dengan <code>SECRET_KEY</code> yang kuat.</p>
+            <p><strong>Bukti:</strong> Penggunaan <code>flask_login</code> dan <code>Flask-Talisman</code> di <code>app/__init__.py</code>.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Pastikan <code>SECRET_KEY</code> tetap rahasia dan memiliki entropi yang tinggi.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span>.</p>
+        </div>
+
+        <h2>2. Access Control & Privilege Escalation</h2>
+        <div class="section">
+            <p><strong>Temuan:</strong> Horizontal privilege escalation.</p>
+            <p><strong>Dampak:</strong> Anggota hanya dapat melihat dan mengelola sumber daya (surat) yang mereka unggah sendiri. Operasi CRUD pada surat hanya dapat dilakukan oleh admin.</p>
+            <p><strong>Bukti:</strong> Filter <code>uploaded_by_user_id=current_user.id</code> di <code>list_surat_masuk</code> dan <code>list_surat_keluar</code> untuk peran anggota. Dekorator <code>@requires_role('admin')</code> dan <code>@owns_resource</code> pada operasi CRUD surat.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Tidak ada.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span>.</p>
+        </div>
+        <div class="section">
+            <p><strong>Temuan:</strong> Vertical privilege escalation.</p>
+            <p><strong>Dampak:</strong> Pengguna non-admin tidak dapat mengakses fungsi atau data yang seharusnya hanya dapat diakses oleh admin.</p>
+            <p><strong>Bukti:</strong> Dekorator <code>@requires_role('admin')</code> digunakan secara konsisten pada semua rute dan fungsi yang memerlukan hak akses admin (misalnya, dashboard admin, pendaftaran anggota, operasi CRUD surat).</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Tidak ada.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span>.</p>
+        </div>
+        <div class="section">
+            <p><strong>Temuan:</strong> Broken role mapping (Admin → Anggota, Anggota → Admin).</p>
+            <p><strong>Dampak:</strong> Tidak ada mekanisme yang terlihat untuk mengubah peran pengguna secara tidak sah setelah pendaftaran. Pendaftaran anggota baru hanya dapat dilakukan oleh admin.</p>
+            <p><strong>Bukti:</strong> Logika pendaftaran di <code>app/routes/auth.py</code> dan <code>app/decorators.py</code>.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Tidak ada.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span>.</p>
+        </div>
+        <div class="section">
+            <p><strong>Temuan:</strong> Access to restricted routes.</p>
+            <p><strong>Dampak:</strong> Semua rute yang memerlukan autentikasi atau otorisasi dilindungi dengan benar.</p>
+            <p><strong>Bukti:</strong> Penggunaan <code>@login_required</code>, <code>@requires_role</code>, dan <code>@owns_resource</code> di seluruh rute aplikasi.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Tidak ada.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span>.</p>
+        </div>
+
+        <h2>3. Injection & Input Validation</h2>
+        <div class="section">
+            <p><strong>Temuan:</strong> SQL Injection (raw query, ORM, filtering bypass).</p>
+            <p><strong>Dampak:</strong> Aplikasi menggunakan SQLAlchemy ORM secara konsisten, yang secara inheren melindungi dari SQL Injection. Parameter pencarian dan pengurutan divalidasi terhadap daftar putih.</p>
+            <p><strong>Bukti:</strong> Penggunaan <code>db.session</code>, <code>User.query</code>, <code>SuratMasuk.query</code>, <code>SuratKeluar.query</code> di seluruh aplikasi. Validasi daftar putih untuk parameter URL di <code>app/routes/surat_masuk.py</code> dan <code>app/routes/surat_keluar.py</code>.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Tidak ada.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span>.</p>
+        </div>
+        <div class="section">
+            <p><strong>Temuan:</strong> Template Injection.</p>
+            <p><strong>Dampak:</strong> Jinja2 secara default melakukan auto-escaping, yang melindungi dari Template Injection. Tidak ada penggunaan <code>|safe</code> yang mencurigakan dengan input pengguna.</p>
+            <p><strong>Bukti:</strong> Penggunaan <code>render_template</code> dengan Jinja2.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Tidak ada.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span>.</p>
+        </div>
+        <div class="section">
+            <p><strong>Temuan:</strong> Command Injection.</p>
+            <p><strong>Dampak:</strong> Tidak ada penggunaan fungsi eksekusi perintah shell (<code>os.system</code>, <code>subprocess</code>) dengan input pengguna yang ditemukan. <code>secure_filename</code> digunakan untuk nama file.</p>
+            <p><strong>Bukti:</strong> Tinjauan kode di seluruh aplikasi.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Tidak ada.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span>.</p>
+        </div>
+        <div class="section">
+            <p><strong>Temuan:</strong> Deserialization vulnerabilities.</p>
+            <p><strong>Dampak:</strong> Tidak ada penggunaan pustaka deserialisasi yang rentan (misalnya, <code>pickle</code>, <code>yaml.load</code>) dengan input yang tidak terpercaya yang ditemukan.</p>
+            <p><strong>Bukti:</strong> Tinjauan kode di seluruh aplikasi.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Tidak ada.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span>.</p>
+        </div>
+        <div class="section">
+            <p><strong>Temuan:</strong> Business logic bypass.</p>
+            <p><strong>Dampak:</strong> Tidak ada celah logika bisnis yang ditemukan selama tinjauan kode. Kontrol akses yang ketat dan validasi input memitigasi banyak potensi bypass.</p>
+            <p><strong>Bukti:</strong> Tinjauan alur kerja dan kontrol akses.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Tidak ada.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span>.</p>
+        </div>
+
+        <h2>4. File Upload & File Handling</h2>
+        <div class="section">
+            <p><strong>Temuan:</strong> File upload extension bypass, MIME spoofing, SVG/script embedding, Path traversal, RCE via uploaded document.</p>
+            <p><strong>Dampak:</strong> Penanganan unggah file sangat aman. Validasi tipe MIME yang kuat menggunakan <code>python-magic</code>, daftar putih ekstensi yang ketat, <code>secure_filename</code>, dan nama file unik mencegah berbagai serangan terkait unggah file. Pembatasan ukuran file juga diterapkan.</p>
+            <p><strong>Bukti:</strong> Fungsi <code>is_allowed_file</code>, <code>ALLOWED_MIME_TYPES</code>, <code>secure_filename</code>, <code>uuid.uuid4()</code> di <code>app/routes/surat_masuk.py</code> dan <code>app/routes/surat_keluar.py</code>. Validasi ukuran file di <code>app/forms.py</code> dan <code>app/__init__.py</code>.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Tidak ada.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span>.</p>
+        </div>
+
+        <h2>5. API Penetration Testing</h2>
+        <div class="section">
+            <p><strong>Temuan:</strong> Missing authentication on API routes, No rate limiting, IDOR (Insecure Direct Object Reference), Data leakage, Unbounded request payload.</p>
+            <p><strong>Dampak:</strong> Aplikasi ini tidak memiliki API RESTful/GraphQL terpisah. Semua interaksi melalui antarmuka web tradisional. Kontrol keamanan yang diterapkan pada antarmuka web (autentikasi, rate limiting, mitigasi IDOR, validasi input) berlaku untuk semua interaksi HTTP.</p>
+            <p><strong>Bukti:</strong> Tinjauan seluruh rute aplikasi yang mengembalikan <code>render_template</code> atau <code>redirect</code>.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Tidak ada.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span>.</p>
+        </div>
+
+        <h2>6. Rate Limiting, Bruteforce, Spam & Abuse Testing</h2>
+        <div class="section">
+            <p><strong>Temuan:</strong> Login brute force.</p>
+            <p><strong>Dampak:</strong> Serangan brute force pada rute login dicegah secara efektif.</p>
+            <p><strong>Bukti:</strong> <code>limiter.limit("5 per minute")</code> pada rute <code>/login</code> di <code>app/routes/auth.py</code>.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Tidak ada.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span>.</p>
+        </div>
+        <div class="section">
+            <p><strong>Temuan:</strong> OTP brute force.</p>
+            <p><strong>Dampak:</strong> Fungsionalitas OTP tidak ada dalam aplikasi.</p>
+            <p><strong>Bukti:</strong> Tidak ada implementasi OTP yang ditemukan.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span> (tidak berlaku).</p>
+            <p><strong>Rekomendasi:</strong> Tidak ada.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span> (tidak berlaku).</p>
+        </div>
+        <div class="section">
+            <p><strong>Temuan:</strong> Unlimited form submission.</p>
+            <p><strong>Dampak:</strong> Batas default <code>Flask-Limiter</code> ("200 per day", "50 per hour") berlaku untuk semua rute, memberikan perlindungan dasar terhadap pengiriman formulir tanpa batas. Perlindungan CSRF juga aktif.</p>
+            <p><strong>Bukti:</strong> Inisialisasi <code>Flask-Limiter</code> di <code>app/__init__.py</code> dan penggunaan <code>Flask-WTF</code>.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Pertimbangkan untuk menerapkan batas tingkat yang lebih spesifik dan ketat pada formulir pendaftaran atau formulir lain yang rentan terhadap spam atau penyalahgunaan, di luar batas default global.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span> (dengan potensi peningkatan).</p>
+        </div>
+        <div class="section">
+            <p><strong>Temuan:</strong> Mass assignment.</p>
+            <p><strong>Dampak:</strong> Penggunaan SQLAlchemy ORM dengan penetapan atribut model secara eksplisit mencegah serangan mass assignment.</p>
+            <p><strong>Bukti:</strong> Objek model dibuat dengan menetapkan atribut satu per satu (misalnya, <code>user.username = form.username.data</code>).</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Tidak ada.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span>.</p>
+        </div>
+
+        <h2>7. Server & Deployment Security</h2>
+        <div class="section">
+            <p><strong>Temuan:</strong> <code>force_https</code> di Flask-Talisman diatur ke <code>False</code>.</p>
+            <p><strong>Dampak:</strong> Jika aplikasi tidak di-deploy di belakang proxy/load balancer yang mengelola HTTPS, pengguna dapat mengakses aplikasi melalui HTTP, yang dapat menyebabkan transmisi data sensitif yang tidak terenkripsi dan melemahkan perlindungan HSTS pada kunjungan pertama.</p>
+            <p><strong>Bukti:</strong> <code>app/__init__.py</code>, baris <code>force_https=False</code>.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-sedang">Sedang</span> (tergantung pada lingkungan deployment).</p>
+            <p><strong>Rekomendasi:</strong> Di lingkungan produksi, pastikan aplikasi diakses hanya melalui HTTPS. Jika proxy/load balancer tidak menangani pengalihan HTTP ke HTTPS, ubah <code>force_https=True</code> di konfigurasi Talisman di <code>app/__init__.py</code>.</p>
+            <p><strong>Status:</strong> <span class="status-rentan">Rentan</span> (potensial, tergantung deployment).</p>
+        </div>
+        <div class="section">
+            <p><strong>Temuan:</strong> Missing security headers.</p>
+            <p><strong>Dampak:</strong> Aplikasi mengimplementasikan berbagai header keamanan penting melalui Flask-Talisman, termasuk CSP, HSTS, X-Frame-Options, X-Content-Type-Options, dan X-XSS-Protection. Header <code>Server</code> dan <code>X-Powered-By</code> juga dihapus.</p>
+            <p><strong>Bukti:</strong> Konfigurasi <code>Flask-Talisman</code> dan fungsi <code>remove_server_headers</code> di <code>app/__init__.py</code>.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Tidak ada.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span>.</p>
+        </div>
+        <div class="section">
+            <p><strong>Temuan:</strong> CORS misconfiguration.</p>
+            <p><strong>Dampak:</strong> Tidak ada konfigurasi CORS eksplisit yang diaktifkan, sehingga Same-Origin Policy default browser berlaku, yang merupakan pengaturan paling aman.</p>
+            <p><strong>Bukti:</strong> Tidak ada konfigurasi <code>flask_cors</code> atau sejenisnya yang aktif.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Tidak ada.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span>.</p>
+        </div>
+        <div class="section">
+            <p><strong>Temuan:</strong> Exposed debug mode.</p>
+            <p><strong>Dampak:</strong> Mode debug dikontrol oleh variabel lingkungan <code>FLASK_DEBUG</code>, mencegah aktivasi yang tidak disengaja di produksi.</p>
+            <p><strong>Bukti:</strong> <code>app.run(debug=os.environ.get('FLASK_DEBUG', 'false').lower() == 'true')</code> di <code>app.py</code>.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Tidak ada.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span>.</p>
+        </div>
+        <div class="section">
+            <p><strong>Temuan:</strong> Directory listing.</p>
+            <p><strong>Dampak:</strong> Tidak ada indikasi directory listing yang diaktifkan oleh aplikasi.</p>
+            <p><strong>Bukti:</strong> Tinjauan kode aplikasi.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Pastikan server web yang melayani aplikasi juga menonaktifkan directory listing.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span>.</p>
+        </div>
+        <div class="section">
+            <p><strong>Temuan:</strong> Sensitive file exposure (.env, config, backup, logs).</p>
+            <p><strong>Dampak:</strong> File <code>.env</code> harus dijaga kerahasiaannya. File log disimpan di <code>app/logs</code> dan tidak dapat diakses secara publik melalui rute aplikasi.</p>
+            <p><strong>Bukti:</strong> Struktur file dan tinjauan rute.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Pastikan file <code>.env</code> tidak pernah di-commit ke repositori dan direktori log tidak dapat diakses secara publik oleh server web.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span>.</p>
+        </div>
+
+        <h2>8. Workflow-level Testing</h2>
+        <div class="section">
+            <p><strong>Temuan:</strong> Login anggota, Login admin, Dashboard, CRUD, Upload download, Search, Pagination, User profile update, Semua endpoint internal.</p>
+            <p><strong>Dampak:</strong> Semua alur kerja utama telah ditinjau dan menunjukkan implementasi kontrol akses, validasi input, dan penanganan file yang kuat. Tidak ada celah logika bisnis atau bypass yang ditemukan. Fungsionalitas pembaruan profil pengguna tidak ditemukan.</p>
+            <p><strong>Bukti:</strong> Tinjauan komprehensif terhadap semua rute dan logika terkait.</p>
+            <p><strong>Tingkat Risiko:</strong> <span class="risk-rendah">Rendah</span>.</p>
+            <p><strong>Rekomendasi:</strong> Tidak ada.</p>
+            <p><strong>Status:</strong> <span class="status-aman">Aman</span>.</p>
+        </div>
+    </div>
+</body>
+</html>

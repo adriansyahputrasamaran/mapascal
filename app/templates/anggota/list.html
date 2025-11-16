@@ -1,0 +1,42 @@
+{% extends "base_anggota.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mt-4">Daftar Anggota MAPASCAL</h1>
+    <p class="lead mb-4">Berikut adalah daftar lengkap anggota MAPASCAL.</p>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Informasi Anggota</h6>
+        </div>
+        <div class="card-body">
+            {% if anggota_list %}
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Nama Lengkap</th>
+                            <th>NIA</th>
+                            <th>Jenjang Keanggotaan</th>
+                            <th>Nama Lapangan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for anggota in anggota_list %}
+                        <tr>
+                            <td>{{ anggota.nama_lengkap }}</td>
+                            <td>{{ anggota.nia }}</td>
+                            <td>{{ anggota.jenjang_keanggotaan }}</td>
+                            <td>{{ anggota.nama_lapangan if anggota.nama_lapangan else '-' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p>Belum ada anggota yang terdaftar.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

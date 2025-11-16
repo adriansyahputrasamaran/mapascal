@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block body_content %}
+<div class="d-flex" id="wrapper">
+    <!-- Sidebar -->
+    <div class="sidebar border-end" id="sidebar-wrapper"> {# Removed bg-white #}
+        <div class="sidebar-heading border-bottom"> {# Removed bg-light #}
+            <a class="navbar-brand" href="{{ url_for('auth.home') }}">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="MAPASCAL Logo" height="40" class="me-2">
+            </a>
+        </div>
+        <div class="list-group list-group-flush">
+            <a href="{{ url_for('auth.dashboard_admin') }}" class="list-group-item list-group-item-action p-3 {% if title == 'Dashboard Admin' %}active{% endif %}"> {# Removed bg-light #}
+                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+            </a>
+            <a href="{{ url_for('surat_masuk.list_surat_masuk') }}" class="list-group-item list-group-item-action p-3 {% if 'Surat Masuk' in title %}active{% endif %}"> {# Removed bg-light #}
+                <i class="fas fa-inbox me-2"></i>Kelola Surat Masuk
+            </a>
+            <a href="{{ url_for('surat_keluar.list_surat_keluar') }}" class="list-group-item list-group-item-action p-3 {% if 'Surat Keluar' in title %}active{% endif %}"> {# Removed bg-light #}
+                <i class="fas fa-paper-plane me-2"></i>Kelola Surat Keluar
+            </a>
+            <a href="{{ url_for('auth.register_anggota') }}" class="list-group-item list-group-item-action p-3 {% if title == 'Daftarkan Anggota' %}active{% endif %}">
+                <i class="fas fa-users me-2"></i>Daftarkan Anggota
+            </a>
+            <a href="{{ url_for('auth.logout') }}" class="list-group-item list-group-item-action p-3"> {# Removed bg-light #}
+                <i class="fas fa-sign-out-alt me-2"></i>Logout
+            </a>
+        </div>
+    </div>
+    <!-- Page Content Wrapper -->
+    <div id="page-content-wrapper">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+            <div class="container-fluid">
+                <button class="btn btn-primary" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-user-circle me-1"></i>{{ current_user.nama_lengkap }}
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="#">Profil</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container-fluid content mt-4">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}

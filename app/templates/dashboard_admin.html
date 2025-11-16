@@ -1,0 +1,111 @@
+{% extends "base_admin.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mt-4">Dashboard Admin</h1>
+    <p class="lead mb-4">Selamat Datang, Admin {{ user.nama_lengkap }}! Ini adalah ringkasan aktivitas sistem Anda.</p>
+
+    <div class="row">
+        <!-- Card 1: Total Surat Masuk -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Surat Masuk</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">0</div> <!-- Placeholder -->
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-inbox fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Total Surat Keluar -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Total Surat Keluar</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">0</div> <!-- Placeholder -->
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-paper-plane fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Total Anggota -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Anggota</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_anggota }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Aksi Cepat</h6>
+                </div>
+                <div class="card-body">
+                    <a href="{{ url_for('surat_masuk.add_surat_masuk') }}" class="btn btn-primary me-2 mb-2">
+                        <i class="fas fa-plus-circle me-1"></i> Tambah Surat Masuk
+                    </a>
+                    <a href="{{ url_for('surat_keluar.add_surat_keluar') }}" class="btn btn-success me-2 mb-2">
+                        <i class="fas fa-plus-circle me-1"></i> Tambah Surat Keluar
+                    </a>
+                    <a href="{{ url_for('auth.register_anggota') }}" class="btn btn-info me-2 mb-2">
+                        <i class="fas fa-user-plus me-1"></i> Daftarkan Anggota
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Placeholder for recent activity or charts -->
+    <div class="row mt-4">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Aktivitas Surat Masuk Terbaru</h6>
+                </div>
+                <div class="card-body">
+                    <p>Daftar surat masuk terbaru akan ditampilkan di sini.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Aktivitas Surat Keluar Terbaru</h6>
+                </div>
+                <div class="card-body">
+                    <p>Daftar surat keluar terbaru akan ditampilkan di sini.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

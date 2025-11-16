@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container text-center mt-5">
+    <h1 class="display-1">500</h1>
+    <p class="lead">Terjadi kesalahan internal server.</p>
+    <p>Maaf, terjadi masalah pada server kami. Silakan coba lagi nanti.</p>
+    <a href="{{ url_for('auth.home') }}" class="btn btn-primary">Kembali ke Beranda</a>
+</div>
+{% endblock %}

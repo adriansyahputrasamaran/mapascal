@@ -1,0 +1,14 @@
+{% extends "base_anggota.html" %}
+
+{% block content %}
+<div class="p-5 mb-4 bg-light rounded-3 text-center">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">Administrasi Mahasiswa Pecinta Alam STMIK Computer Analist (MAPASCAL)</h1>
+        <p class="col-md-8 fs-4 mx-auto">Aplikasi ini bertujuan untuk mendigitalisasi pencatatan dan pengelolaan surat masuk dan surat keluar organisasi MAPASCAL.</p>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg">Login</a>
+            <a href="{{ url_for('auth.about') }}" class="btn btn-outline-secondary btn-lg">Lihat Selengkapnya</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
