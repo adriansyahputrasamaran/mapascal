@@ -34,7 +34,7 @@
                     </div>
                     <div class="mb-3">
                         {{ form.role_selection.label(class="form-label") }}
-                        {{ form.role_selection(class="form-control form-select-role") }}
+                        {{ form.role_selection(class="form-control form-select-role", id="roleSelection") }}
                         {% if form.role_selection.errors %}
                             <div class="invalid-feedback d-block">
                                 {% for error in form.role_selection.errors %}
@@ -49,8 +49,7 @@
                 </form>
                 <hr>
                 <p class="text-center mt-3">
-                    Belum terdaftar? Silakan hubungi admin.
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#adminContactModal">Klik di sini</a>
+                    Belum punya akun? <a href="{{ url_for('auth.register') }}">Daftar di sini</a>.
                 </p>
             </div>
         </div>
@@ -65,14 +64,10 @@
                 <h5 class="modal-title" id="adminContactModalLabel">Hubungi Admin</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <p><strong>Nomor:</strong> {{ config.ADMIN_CONTACT_PHONE }}</p>
-                <p><strong>Email:</strong> {{ config.ADMIN_CONTACT_EMAIL }}</p>
-                <p><strong>Nama:</strong> {{ config.ADMIN_CONTACT_NAME }}</p>
-            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
-</div>{% endblock %}
+</div>
+{% endblock %}

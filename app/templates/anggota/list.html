@@ -19,6 +19,7 @@
                             <th>NIA</th>
                             <th>Jenjang Keanggotaan</th>
                             <th>Nama Lapangan</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -28,6 +29,13 @@
                             <td>{{ anggota.nia }}</td>
                             <td>{{ anggota.jenjang_keanggotaan }}</td>
                             <td>{{ anggota.nama_lapangan if anggota.nama_lapangan else '-' }}</td>
+                            <td>
+                                {% if anggota.is_active %}
+                                    <span class="badge bg-success">Aktif</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">Belum Aktif</span>
+                                {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>

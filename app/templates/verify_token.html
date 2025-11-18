@@ -1,0 +1,37 @@
+{% extends "base_anggota.html" %}
+{% block content %}
+<div class="login-bg d-flex align-items-center justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card login-card">
+            <div class="card-header text-center">
+                <img src="{{ url_for('static', filename='images/mapascal_logo.png') }}" alt="MAPASCAL Logo" height="80" class="mb-3">
+                <h2>Verifikasi Kode Akses</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('auth.verify_token') }}">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        <p class="text-center">Silakan masukkan kode akses yang telah diberikan oleh Admin.</p>
+                        {{ form.access_token.label(class="form-label") }}
+                        {{ form.access_token(class="form-control", placeholder="Kode Akses") }}
+                        {% if form.access_token.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.access_token.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="d-grid gap-2">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+                <hr>
+                <p class="text-center mt-3">
+                    <a href="{{ url_for('auth.logout') }}">Bukan Anda? Logout</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

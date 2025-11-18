@@ -20,15 +20,15 @@ login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 login_manager.login_message_category = 'info'
 login_manager.login_message = 'Silakan login untuk mengakses halaman ini.'
+
 migrate = Migrate()
 csrf = CSRFProtect()
 limiter = Limiter(
     key_func=get_remote_address,
-    default_limits=["200 per day", "50 per hour"]
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="memory://" # Use in-memory storage
 )
 talisman = Talisman() # Initialize Talisman
-
-from app.models import User, SuratMasuk, SuratKeluar # Import models
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -48,6 +48,21 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
     csrf.init_app(app)
     limiter.init_app(app)
+
+    # Register user_loader and import models within app context
+    from app.models import User, SuratMasuk, SuratKeluar
+    
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
+
+    # Log email configuration for debugging
+    app.logger.debug(f"MAIL_SERVER: {app.config.get('MAIL_SERVER')}")
+    app.logger.debug(f"MAIL_PORT: {app.config.get('MAIL_PORT')}")
+    app.logger.debug(f"MAIL_USE_TLS: {app.config.get('MAIL_USE_TLS')}")
+    app.logger.debug(f"MAIL_USE_SSL: {app.config.get('MAIL_USE_SSL')}")
+    app.logger.debug(f"MAIL_USERNAME: {app.config.get('MAIL_USERNAME')}")
+
     # Initialize Talisman with CSP and HSTS
     talisman.init_app(app,
         content_security_policy={
@@ -62,7 +77,7 @@ def create_app(config_class=Config):
             'frame-ancestors': ["'none'"], # Prevent clickjacking
         },
         content_security_policy_nonce_in=['script-src'], # Add nonce to script tags
-        force_https=False, # Set to True in production with HTTPS
+        force_https=not app.config['DEBUG'], # Set to True in production with HTTPS
         strict_transport_security=True,
         strict_transport_security_max_age=31536000,
         strict_transport_security_include_subdomains=True,

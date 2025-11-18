@@ -12,13 +12,14 @@ class Config:
     MYSQL_DB = os.environ.get("MYSQLDATABASE")
 
     SQLALCHEMY_DATABASE_URI = (
-    f"mysql+pymysql://root:hNORIFRysdBfIehFKGjrQFWNrBWHdqAg@shuttle.proxy.rlwy.net:42948/railway"
-)
+        f"mysql+pymysql://{os.environ.get('MYSQLUSER')}:{os.environ.get('MYSQLPASSWORD')}"
+        f"@{os.environ.get('MYSQLHOST')}:{os.environ.get('MYSQLPORT')}"
+        f"/{os.environ.get('MYSQLDATABASE')}"
+    )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = os.environ.get('FLASK_DEBUG') == 'True' # Set DEBUG based on FLASK_DEBUG env var
     UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', 'app/uploads') # Configurable upload folder
-
     SQLALCHEMY_ENGINE_OPTIONS = {
         "pool_pre_ping": True,   # Cek koneksi sebelum query
         "pool_recycle": 280,     # Reset pool sebelum MySQL timeouts
@@ -44,3 +45,6 @@ class Config:
 
     # CSRF Protection
     WTF_CSRF_ENABLED = True
+
+
+

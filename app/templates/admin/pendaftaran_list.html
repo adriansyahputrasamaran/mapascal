@@ -1,0 +1,48 @@
+{% extends "base_admin.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Daftar Pendaftaran Anggota (Pending Approval)</h1>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Daftar Pengguna</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Nama Lengkap</th>
+                            <th>NIM / NIA</th>
+                            <th>Tanggal Daftar</th>
+                            <th class="text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.nama_lengkap }}</td>
+                            <td>{{ user.nia }}</td>
+                            <td>{{ user.created_at.strftime('%d %B %Y %H:%M') if user.created_at else 'N/A' }}</td>
+                            <td class="text-center">
+                                <form action="{{ url_for('auth.approve_user', user_id=user.id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menyetujui anggota ini?');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        <i class="fas fa-check me-1"></i> Verifikasi
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center">Tidak ada pendaftaran yang menunggu persetujuan.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

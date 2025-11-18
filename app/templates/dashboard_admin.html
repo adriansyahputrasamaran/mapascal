@@ -1,6 +1,7 @@
 {% extends "base_admin.html" %}
 
 {% block content %}
+<h1>TESTING 123</h1>
 <div class="container-fluid">
     <h1 class="mt-4">Dashboard Admin</h1>
     <p class="lead mb-4">Selamat Datang, Admin {{ user.nama_lengkap }}! Ini adalah ringkasan aktivitas sistem Anda.</p>
@@ -70,18 +71,35 @@
                     <a href="{{ url_for('surat_masuk.add_surat_masuk') }}" class="btn btn-primary me-2 mb-2">
                         <i class="fas fa-plus-circle me-1"></i> Tambah Surat Masuk
                     </a>
-                    <a href="{{ url_for('surat_keluar.add_surat_keluar') }}" class="btn btn-success me-2 mb-2">
-                        <i class="fas fa-plus-circle me-1"></i> Tambah Surat Keluar
-                    </a>
-                    <a href="{{ url_for('auth.register_anggota') }}" class="btn btn-info me-2 mb-2">
-                        <i class="fas fa-user-plus me-1"></i> Daftarkan Anggota
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
+                                        <a href="{{ url_for('surat_keluar.add_surat_keluar') }}" class="btn btn-success me-2 mb-2">
+                                            <i class="fas fa-plus-circle me-1"></i> Tambah Surat Keluar
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                            <div class="row">
+                                <div class="col-lg-6 mb-4">
+                                    <a href="{{ url_for('auth.manage_members') }}" style="text-decoration: none;">
+                                        <div class="card bg-primary text-white shadow">
+                                            <div class="card-body">
+                                                <div class="row no-gutters align-items-center">
+                                                    <div class="col-auto">
+                                                        <i class="fas fa-users-cog fa-3x"></i>
+                                                    </div>
+                                                    <div class="col ms-3">
+                                                        <div class="text-lg font-weight-bold">
+                                                            Manajemen Anggota
+                                                        </div>
+                                                        <div>Kelola semua anggota aktif dan buat ulang kode akses.</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
 
     <!-- Placeholder for recent activity or charts -->
     <div class="row mt-4">

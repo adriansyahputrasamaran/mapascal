@@ -1,21 +1,21 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import StringField, TextAreaField, SubmitField, DateField, PasswordField, SelectField
-from wtforms.validators import DataRequired, Length, ValidationError, EqualTo
+from wtforms import StringField, TextAreaField, SubmitField, DateField, PasswordField, SelectField, EmailField
+from wtforms.validators import DataRequired, Length, ValidationError, EqualTo, Email
 from datetime import date
 from app.models import User # Import User model for validation
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
-    role_selection = SelectField('Login Sebagai', choices=[('admin', 'Admin'), ('anggota', 'Anggota')], validators=[DataRequired()])
+    role_selection = SelectField('Login Sebagai', choices=[('anggota', 'Anggota'), ('admin', 'Admin')], validators=[DataRequired()])
     submit = SubmitField('Login')
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=4, max=50)]) # Kembali ke Username
+    username = StringField('Username', validators=[DataRequired(), Length(min=4, max=50)])
     nama_lengkap = StringField('Nama Lengkap', validators=[DataRequired(), Length(min=3, max=100)])
-    nama_lapangan = StringField('Nama Lapangan', validators=[DataRequired(), Length(min=3, max=100)])
-    nia = StringField('Nomor Induk Anggota (NIA)', validators=[DataRequired(), Length(min=4, max=50)]) # Field baru
+    nama_lapangan = StringField('Nama Lapangan (Opsional)', validators=[Length(max=100)])
+    nia = StringField('NIM / Nomor Induk Anggota', validators=[DataRequired(), Length(min=4, max=50)])
     jenjang_keanggotaan = SelectField('Jenjang Keanggotaan', choices=[
         ('Anggota Muda', 'Anggota Muda'),
         ('Anggota Penuh', 'Anggota Penuh'),
@@ -23,18 +23,17 @@ class RegistrationForm(FlaskForm):
     ], validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
     confirm_password = PasswordField('Konfirmasi Password', validators=[DataRequired(), EqualTo('password')])
-    role = SelectField('Peran', choices=[('anggota', 'Anggota')], validators=[DataRequired()])
-    submit = SubmitField('Daftarkan Anggota')
+    submit = SubmitField('Daftar')
 
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
         if user:
-            raise ValidationError('Username ini sudah terdaftar. Mohon gunakan username lain.')
+            raise ValidationError('Username ini sudah digunakan. Mohon gunakan yang lain.')
 
-    def validate_nia(self, nia): # Validasi baru untuk NIA
+    def validate_nia(self, nia):
         user = User.query.filter_by(nia=nia.data).first()
         if user:
-            raise ValidationError('NIA ini sudah terdaftar. Mohon gunakan NIA lain.')
+            raise ValidationError('NIM/NIA ini sudah terdaftar. Mohon gunakan yang lain.')
 
 class SuratMasukForm(FlaskForm):
     nomor_surat = StringField('Nomor Surat', validators=[DataRequired(), Length(max=100)])
@@ -65,3 +64,7 @@ class SuratKeluarForm(FlaskForm):
         if field.data:
             if field.data.content_length > 5 * 1024 * 1024: # 5 MB
                 raise ValidationError('Ukuran file terlalu besar (maksimal 5MB).')
+
+class TokenVerificationForm(FlaskForm):
+    access_token = StringField('Kode Akses', validators=[DataRequired()])
+    submit = SubmitField('Verifikasi')

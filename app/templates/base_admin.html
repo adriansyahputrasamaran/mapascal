@@ -13,14 +13,14 @@
             <a href="{{ url_for('auth.dashboard_admin') }}" class="list-group-item list-group-item-action p-3 {% if title == 'Dashboard Admin' %}active{% endif %}"> {# Removed bg-light #}
                 <i class="fas fa-tachometer-alt me-2"></i>Dashboard
             </a>
+            <a href="{{ url_for('auth.pending_registrations') }}" class="list-group-item list-group-item-action p-3 {% if title == 'Pendaftaran Pending' %}active{% endif %}">
+                <i class="fas fa-user-clock me-2"></i>Pendaftaran Pending
+            </a>
             <a href="{{ url_for('surat_masuk.list_surat_masuk') }}" class="list-group-item list-group-item-action p-3 {% if 'Surat Masuk' in title %}active{% endif %}"> {# Removed bg-light #}
                 <i class="fas fa-inbox me-2"></i>Kelola Surat Masuk
             </a>
             <a href="{{ url_for('surat_keluar.list_surat_keluar') }}" class="list-group-item list-group-item-action p-3 {% if 'Surat Keluar' in title %}active{% endif %}"> {# Removed bg-light #}
                 <i class="fas fa-paper-plane me-2"></i>Kelola Surat Keluar
-            </a>
-            <a href="{{ url_for('auth.register_anggota') }}" class="list-group-item list-group-item-action p-3 {% if title == 'Daftarkan Anggota' %}active{% endif %}">
-                <i class="fas fa-users me-2"></i>Daftarkan Anggota
             </a>
             <a href="{{ url_for('auth.logout') }}" class="list-group-item list-group-item-action p-3"> {# Removed bg-light #}
                 <i class="fas fa-sign-out-alt me-2"></i>Logout
@@ -57,6 +57,9 @@
                     {% for category, message in messages %}
                         <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
                             {{ message }}
+                            {% if 'Kode Akses berikut kepadanya:' in message %}
+                                <button type="button" class="btn btn-sm btn-outline-secondary ms-2" onclick="copyAccessToken(this)">Salin Kode</button>
+                            {% endif %}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     {% endfor %}
@@ -66,4 +69,28 @@
         </div>
     </div>
 </div>
+<script>
+    function copyAccessToken(buttonElement) {
+        const messageDiv = buttonElement.closest('.alert');
+        const messageText = messageDiv.textContent;
+        const startIndex = messageText.indexOf('Kode Akses berikut kepadanya:') + 'Kode Akses berikut kepadanya:'.length;
+        const endIndex = messageText.indexOf('Salin Kode'); // Find the start of the button text
+        let accessToken = messageText.substring(startIndex, endIndex).trim();
+
+        // Remove any trailing period if present
+        if (accessToken.endsWith('.')) {
+            accessToken = accessToken.slice(0, -1);
+        }
+
+        navigator.clipboard.writeText(accessToken).then(() => {
+            buttonElement.textContent = 'Disalin!';
+            setTimeout(() => {
+                buttonElement.textContent = 'Salin Kode';
+            }, 2000);
+        }).catch(err => {
+            console.error('Gagal menyalin kode akses:', err);
+            alert('Gagal menyalin kode akses. Silakan salin manual.');
+        });
+    }
+</script>
 {% endblock %}
