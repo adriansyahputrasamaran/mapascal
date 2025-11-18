@@ -17,11 +17,12 @@ class Config:
         # We need to replace the scheme for the pymysql driver.
         SQLALCHEMY_DATABASE_URI = db_url.replace("mysql://", "mysql+pymysql://", 1)
     else:
-        # Fallback to the original method for local development or other environments
-        # where individual variables are set.
+        # Fallback to the original method, but provide a default for MYSQLPORT
+        # to prevent a crash if it's not set in the environment.
+        db_port = os.environ.get('MYSQLPORT', '3306')
         SQLALCHEMY_DATABASE_URI = (
             f"mysql+pymysql://{os.environ.get('MYSQLUSER')}:{os.environ.get('MYSQLPASSWORD')}"
-            f"@{os.environ.get('MYSQLHOST')}:{os.environ.get('MYSQLPORT')}"
+            f"@{os.environ.get('MYSQLHOST')}:{db_port}"
             f"/{os.environ.get('MYSQLDATABASE')}"
         )
 
