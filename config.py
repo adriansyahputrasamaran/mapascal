@@ -11,11 +11,19 @@ class Config:
     MYSQL_PASSWORD = os.environ.get("MYSQLPASSWORD")
     MYSQL_DB = os.environ.get("MYSQLDATABASE")
 
-    SQLALCHEMY_DATABASE_URI = (
-        f"mysql+pymysql://{os.environ.get('MYSQLUSER')}:{os.environ.get('MYSQLPASSWORD')}"
-        f"@{os.environ.get('MYSQLHOST')}:{os.environ.get('MYSQLPORT')}"
-        f"/{os.environ.get('MYSQLDATABASE')}"
-    )
+    db_url = os.environ.get('DATABASE_URL')
+    if db_url and db_url.startswith("mysql://"):
+        # On Railway and similar platforms, DATABASE_URL is provided.
+        # We need to replace the scheme for the pymysql driver.
+        SQLALCHEMY_DATABASE_URI = db_url.replace("mysql://", "mysql+pymysql://", 1)
+    else:
+        # Fallback to the original method for local development or other environments
+        # where individual variables are set.
+        SQLALCHEMY_DATABASE_URI = (
+            f"mysql+pymysql://{os.environ.get('MYSQLUSER')}:{os.environ.get('MYSQLPASSWORD')}"
+            f"@{os.environ.get('MYSQLHOST')}:{os.environ.get('MYSQLPORT')}"
+            f"/{os.environ.get('MYSQLDATABASE')}"
+        )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = os.environ.get('FLASK_DEBUG') == 'True' # Set DEBUG based on FLASK_DEBUG env var
