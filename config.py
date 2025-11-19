@@ -1,4 +1,5 @@
 import os
+import urllib.parse
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -6,8 +7,21 @@ class Config:
     # Set database URI. Prioritize DATABASE_URL from Railway.
     db_url = os.environ.get('DATABASE_URL')
     if db_url:
-        # Standard Railway URL is mysql://... We need mysql+pymysql://
-        SQLALCHEMY_DATABASE_URI = db_url.replace("mysql://", "mysql+pymysql://", 1)
+        # Parse the database URL
+        parsed_url = urllib.parse.urlparse(db_url)
+        
+        # Build the new URL with the correct scheme for SQLAlchemy (mysql+pymysql)
+        # This is more robust than a simple string replacement.
+        SQLALCHEMY_DATABASE_URI = urllib.parse.urlunparse(
+            (
+                'mysql+pymysql',
+                parsed_url.netloc,
+                parsed_url.path,
+                parsed_url.params,
+                parsed_url.query,
+                parsed_url.fragment
+            )
+        )
     else:
         # Fallback for local or other environments using individual variables.
         # Provide a default port to prevent errors.
